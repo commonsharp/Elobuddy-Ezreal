@@ -90,7 +90,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("Harass Configs");
                 ModesMenu1.Add("AutoHarass", new CheckBox("Use Q on AutoHarass", true));
-                ModesMenu1.Add("ManaAuto", new Slider("Mana %", 40));
+                ModesMenu1.Add("ManaAuto", new Slider("Mana %", 80));
                 ModesMenu1.Add("HarassQ", new CheckBox("Use Q on Harass", true));
                 ModesMenu1.Add("ManaH", new Slider("Mana %", 40));
                 ModesMenu1.Add("HarassW", new CheckBox("Use W on Harass", true));

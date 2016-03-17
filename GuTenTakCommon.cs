@@ -54,10 +54,9 @@ namespace GuTenTak.Ezreal
             {
                 Q.Cast(Qp.CastPosition);
             }
-            if (W.IsInRange(Target) && W.IsReady() && useW && Wp.HitChance >= HitChance.High)
+            if (W.IsInRange(Target) && W.IsReady() && useW && Wp.HitChance >= HitChance.High && _Player.ManaPercent <= Program.ModesMenu3["ManaCW"].Cast<Slider>().CurrentValue)
             {
                 W.Cast(Wp.CastPosition);
-
             }
             if (R.IsInRange(Target) && R.IsReady() && useR)
             {
@@ -254,20 +253,6 @@ namespace GuTenTak.Ezreal
             }
         }
 
-        //    public static new void AutoQ()
-        //     {
-        //        var alvo = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-        //         if (alvo == null) return;
-        //        var useQ = ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue;
-        //         var Qp = Q.GetPrediction(alvo);
-        //        if (!alvo.IsValid()) return;
-        //        if (Q.IsInRange(alvo) && Q.IsReady() && useQ && Qp.HitChance >= HitChance.High)
-        //        {
-        //             Q.Cast(Qp.CastPosition);
-        //         }
-        //    }
-
-
         public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
         {
             if (Program.ModesMenu2["AntiGap"].Cast<CheckBox>().CurrentValue)
@@ -280,6 +265,20 @@ namespace GuTenTak.Ezreal
                 {
                     var diffGapCloser = gapcloser.End - gapcloser.Start;
                     E.Cast(ObjectManager.Player.ServerPosition + diffGapCloser);
+                }
+            }
+        }
+
+        public static new void AutoQ()
+        {
+            {
+                var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+                if (Target == null) return;
+                var Qpr = Q.GetPrediction(Target);
+                if (!Target.IsValid()) return;
+                if (Q.IsInRange(Target) && Q.IsReady() && Qpr.HitChance >= HitChance.High)
+                {
+                    Q.Cast(Qpr.CastPosition);
                 }
             }
         }

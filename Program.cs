@@ -82,14 +82,17 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.AddLabel("Combo Configs");
                 ModesMenu1.Add("ComboQ", new CheckBox("Use Q on Combo", true));
                 ModesMenu1.Add("ComboW", new CheckBox("Use W on Combo", true));
+                ModesMenu1.Add("ManaCW", new Slider("Use W Mana %", 30));
                 ModesMenu1.Add("ComboR", new CheckBox("Use R on Combo", true));
                 ModesMenu1.Add("RCount", new Slider("Cast R if Will Hit >=", 3, 2, 5));
                 ModesMenu1.AddSeparator();
                 //ModesMenu1.Add("useItem", new CheckBox("Use Items on Combo", true));
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("Harass Configs");
-                ModesMenu1.Add("ManaH", new Slider("Mana %", 40));
+                ModesMenu1.Add("AutoHarass", new CheckBox("Use Q on AutoHarass", true));
+                ModesMenu1.Add("ManaAuto", new Slider("Mana %", 40));
                 ModesMenu1.Add("HarassQ", new CheckBox("Use Q on Harass", true));
+                ModesMenu1.Add("ManaH", new Slider("Mana %", 40));
                 ModesMenu1.Add("HarassW", new CheckBox("Use W on Harass", true));
                 ModesMenu1.Add("ManaHW", new Slider("Mana %", 60));
                 ModesMenu1.AddSeparator();
@@ -180,6 +183,14 @@ namespace GuTenTak.Ezreal
         }
         static void Game_OnUpdate(EventArgs args)
         {
+            var AutoHQ = ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue;
+            var ManaAuto = ModesMenu1["ManaAuto"].Cast<Slider>().CurrentValue;
+            if (AutoHQ && ManaAuto <= _Player.ManaPercent)
+            {
+                    //Thanks.KEzreal
+                    Common.AutoQ();
+            }
+
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
                 Common.Combo();

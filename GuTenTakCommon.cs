@@ -123,16 +123,19 @@ namespace GuTenTak.Ezreal
         }
         public static void LaneClear()
         {
-            bool lastQ = false;
-            var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
-                Player.Instance.ServerPosition, Q.Range).OrderBy(h => h.Health);
+            if (ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program._Player.ManaPercent >= Program.ModesMenu2["ManaL"].Cast<Slider>().CurrentValue)
             {
-                if (minions.Any() && !lastQ && Program._Player.ManaPercent >= Program.ModesMenu2["ManaL"].Cast<Slider>().CurrentValue) 
+                bool lastQ = false;
+                var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
+                    Player.Instance.ServerPosition, Q.Range).OrderBy(h => h.Health);
                 {
-                    var getHealthyCs = minions.GetEnumerator();
-                    while (getHealthyCs.MoveNext())
+                    if (minions.Any() && !lastQ)
                     {
-                        Q.Cast(Q.GetPrediction(minions.Last()).CastPosition);
+                        var getHealthyCs = minions.GetEnumerator();
+                        while (getHealthyCs.MoveNext())
+                        {
+                            Q.Cast(Q.GetPrediction(minions.Last()).CastPosition);
+                        }
                     }
                 }
             }
@@ -179,12 +182,7 @@ namespace GuTenTak.Ezreal
             var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
             var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health));
             if (qminions == null) return;
-            if ((Program._Player.ManaPercent <= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue))
-            {
-                return;
-            }
-
-            if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions))
+            if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
             {
                 Q.Cast(qminions);
             }

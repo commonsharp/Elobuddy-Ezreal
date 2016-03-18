@@ -5,6 +5,7 @@ using GuTenTak.Ezreal;
 
 namespace GuTenTak.Ezreal
 {
+    //Thanks KEz
     internal class DamageLib
     {
         private static readonly AIHeroClient _Player = ObjectManager.Player;

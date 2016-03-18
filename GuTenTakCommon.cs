@@ -110,11 +110,11 @@ namespace GuTenTak.Ezreal
             if (!Target.IsValid() && Target == null) return;
 
 
-            if (Q.IsInRange(Target) && Q.IsReady() && useQ && Qp.HitChance >= HitChance.High)
+            if (Q.IsInRange(Target) && Q.IsReady() && useQ && Qp.HitChance >= HitChance.High && Program._Player.ManaPercent >= Program.ModesMenu1["ManaHQ"].Cast<Slider>().CurrentValue)
             {
                 Q.Cast(Qp.CastPosition);
             }
-            if (W.IsInRange(Target) && W.IsReady() && useW && Wp.HitChance >= HitChance.High && Program._Player.ManaPercent <= Program.ModesMenu2["ManaHW"].Cast<Slider>().CurrentValue)
+            if (W.IsInRange(Target) && W.IsReady() && useW && Wp.HitChance >= HitChance.High && Program._Player.ManaPercent >= Program.ModesMenu1["ManaHW"].Cast<Slider>().CurrentValue)
             {
                 W.Cast(Wp.CastPosition);
 

@@ -54,7 +54,7 @@ namespace GuTenTak.Ezreal
             {
                 Q.Cast(Qp.CastPosition);
             }
-            if (W.IsInRange(Target) && W.IsReady() && useW && Wp.HitChance >= HitChance.High && _Player.ManaPercent <= Program.ModesMenu3["ManaCW"].Cast<Slider>().CurrentValue)
+            if (W.IsInRange(Target) && W.IsReady() && useW && _Player.ManaPercent >= Program.ModesMenu1["ManaCW"].Cast<Slider>().CurrentValue && Wp.HitChance >= HitChance.High)
             {
                 W.Cast(Wp.CastPosition);
             }

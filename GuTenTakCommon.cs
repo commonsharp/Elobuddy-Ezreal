@@ -6,11 +6,15 @@ using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace GuTenTak.Ezreal
 {
     internal class Common : Program
     {
+        public static object HeroManager { get; private set; }
+        public static Geometry.Polygon.Circle DashCircle { get; private set; }
+
         public static Obj_AI_Base GetFindObj(Vector3 Pos, string name, float range)
         {
             var CusPos = Pos;
@@ -32,6 +36,20 @@ namespace GuTenTak.Ezreal
             return target;
         }
 
+        internal static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
+        {
+            if (ModesMenu1["ComboQ"].Cast<CheckBox>().CurrentValue)
+            {
+                var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+                var Qp = Q.GetPrediction(Target);
+                if (Q.IsInRange(Target) && Q.IsReady() && Qp.HitChance >= HitChance.High)
+                {
+                    Q.Cast(Qp.CastPosition);
+                }
+            }
+            Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
+        }
+
         public static void Combo()
         {
 
@@ -49,11 +67,21 @@ namespace GuTenTak.Ezreal
             //Itens.useItemtens();
             //}
 
-
             if (Q.IsInRange(Target) && Q.IsReady() && useQ && Qp.HitChance >= HitChance.High)
             {
-                Q.Cast(Qp.CastPosition);
+                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && !ObjectManager.Player.IsInAutoAttackRange(Target))
+                {
+                    Q.Cast(Qp.CastPosition);
+                }
+                else
+                {
+                    if (!ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
+                    {
+                        Q.Cast(Qp.CastPosition);
+                    }
+                }
             }
+
             if (W.IsInRange(Target) && W.IsReady() && useW && _Player.ManaPercent >= Program.ModesMenu1["ManaCW"].Cast<Slider>().CurrentValue && Wp.HitChance >= HitChance.High)
             {
                 W.Cast(Wp.CastPosition);
@@ -177,15 +205,13 @@ namespace GuTenTak.Ezreal
 
         public static void LastHit()
         {
-
-            var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
-            var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health));
-            if (qminions == null) return;
-            if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
-            {
-                Q.Cast(qminions);
-            }
-
+                var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
+                var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health));
+                if (qminions == null) return;
+                if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
+                {
+                    Q.Cast(qminions);
+                }
         }
 
         public static void Flee()
@@ -212,6 +238,81 @@ namespace GuTenTak.Ezreal
                     Q.Cast(Qp.CastPosition);
                 }
 
+            }
+        }
+
+        internal static void ItemUsage()
+        {
+            var target = TargetSelector.GetTarget(550, DamageType.Physical); // 550 = Botrk.Range
+            if (ModesMenu3["useYoumuu"].Cast<CheckBox>().CurrentValue && Program.Youmuu.IsOwned() && Program.Youmuu.IsReady())
+            {
+                Program.Youmuu.Cast();
+            }
+            if (target != null)
+            {
+                if (ModesMenu3["useBotrk"].Cast<CheckBox>().CurrentValue && Item.HasItem(Program.Cutlass.Id) && Item.CanUseItem(Program.Cutlass.Id) &&
+                    Player.Instance.HealthPercent < ModesMenu3["minHPBotrk"].Cast<Slider>().CurrentValue &&
+                    target.HealthPercent < ModesMenu3["enemyMinHPBotrk"].Cast<Slider>().CurrentValue)
+                {
+                    Item.UseItem(Program.Cutlass.Id, target);
+                }
+                if (ModesMenu3["useBotrk"].Cast<CheckBox>().CurrentValue && Item.HasItem(Program.Botrk.Id) && Item.CanUseItem(Program.Botrk.Id) &&
+                    Player.Instance.HealthPercent < ModesMenu3["minHPBotrk"].Cast<Slider>().CurrentValue &&
+                    target.HealthPercent < ModesMenu3["enemyMinHPBotrk"].Cast<Slider>().CurrentValue)
+                {
+                    Program.Botrk.Cast(target);
+                }
+            }
+        }
+
+        public static void Skinhack()
+        {
+            if (ModesMenu3["skinhack"].Cast<CheckBox>().CurrentValue)
+            {
+                Player.SetSkinId((int)ModesMenu3["skinId"].Cast<ComboBox>().CurrentValue);
+            }
+        }
+
+
+        internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
+        {
+            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+            var Qp = Q.GetPrediction(Target);
+            if (Qp.HitChance <= HitChance.Dashing)
+            {
+                Q.Cast(Qp.CastPosition);
+                Chat.Print("Dash!");
+            }
+        }
+    /*
+    internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
+    {
+        if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue)
+        {
+            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+            var Qp = Q.GetPrediction(Target);
+            if (Q.GetPrediction(Target).HitChance >= HitChance.Dashing)
+            {
+                Q.Cast(Q.GetPrediction(Target).CastPosition);
+            }
+        }
+        Chat.Print("Dash!");
+    }
+    */
+
+    internal static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
+        {
+            if (Program.ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
+            {
+                string[] herogapcloser =
+                {
+                "Braum", "Ekko", "Elise", "Fiora", "Kindred", "Lucian", "Yi", "Nidalee", "Quinn", "Riven", "Shaco", "Sion", "Vayne", "Yasuo", "Graves", "Azir", "Gnar", "Irelia", "Kalista"
+            };
+                if (sender.IsEnemy && sender.GetAutoAttackRange() >= ObjectManager.Player.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
+                {
+                    var diffGapCloser = gapcloser.End - gapcloser.Start;
+                    E.Cast(ObjectManager.Player.ServerPosition + diffGapCloser);
+                }
             }
         }
 
@@ -253,9 +354,10 @@ namespace GuTenTak.Ezreal
             }
         }
 
+        /*
         public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
         {
-            if (Program.ModesMenu2["AntiGap"].Cast<CheckBox>().CurrentValue)
+            if (Program.ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
                 {
                 string[] herogapcloser =
                 {
@@ -267,7 +369,33 @@ namespace GuTenTak.Ezreal
                     E.Cast(ObjectManager.Player.ServerPosition + diffGapCloser);
                 }
             }
-        }
+        }*/
+
+        /*
+var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue) //&& ModesMenu1["Snipe " + Target.ChampionName].Cast<CheckBox>().CurrentValue)
+{
+        var pred = Q.GetPrediction(Target);
+    if (Q.IsReady() && pred.HitChance >= HitChance.Dashing)
+    {
+        Q.Cast(pred.CastPosition);
+    }
+}
+*/
+        /*
+        public static void Snipe()
+        {
+            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+            if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue) //&& ModesMenu1["Snipe " + Target.ChampionName].Cast<CheckBox>().CurrentValue)
+            {
+                if (Q.IsInRange(Target) && Q.IsReady() && Q.GetPrediction(Target).HitChance == HitChance.Dashing)
+                {
+                    Prediction.Position.GetDashPos(Target)
+                    var Qpr = Q.GetPrediction(Target);
+                    Q.Cast(Target
+                }
+            }
+        }*/
 
         public static new void AutoQ()
         {

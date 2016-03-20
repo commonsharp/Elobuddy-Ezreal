@@ -21,6 +21,7 @@ namespace GuTenTak.Ezreal
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
         public static Item Tear = new Item(ItemId.Tear_of_the_Goddess);
         public static Item Qss = new Item(ItemId.Quicksilver_Sash);
+        public static Item Simitar = new Item(ItemId.Mercurial_Scimitar);
         public static Item hextech = new Item(ItemId.Hextech_Gunblade, 700);
         public static AIHeroClient PlayerInstance
         {
@@ -154,6 +155,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("enemyMinHPBotrk", new Slider("Min enemy health to use Botrk %", 80));
 
                 ModesMenu3.AddLabel("QSS Configs");
+                ModesMenu3.Add("Qssmode", new ComboBox(" ", 0, "Auto", "Combo"));
                 ModesMenu3.Add("Stun", new CheckBox("Stun", true));
                 ModesMenu3.Add("Blind", new CheckBox("Blind", true));
                 ModesMenu3.Add("Charm", new CheckBox("Charm", true));
@@ -295,6 +297,10 @@ namespace GuTenTak.Ezreal
             if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
             {
                 Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
+            }
+            else
+            {
+                Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
             }
         }
     }

@@ -12,7 +12,6 @@ namespace GuTenTak.Ezreal
 {
     internal class Common : Program
     {
-                public static int DebuffCount;
         public static object HeroManager { get; private set; }
         // public static Geometry.Polygon.Circle DashCircle { get; private set; }
 
@@ -132,61 +131,123 @@ namespace GuTenTak.Ezreal
             var duration = args.Buff.EndTime - Game.Time;
             var Name = args.Buff.Name.ToLower();
 
-            if (type == BuffType.Taunt && ModesMenu3["Taunt"].Cast<CheckBox>().CurrentValue)
+            if (ModesMenu3["Qssmode"].Cast<ComboBox>().CurrentValue == 0)
             {
-                DoQSS();
+                if (type == BuffType.Taunt && ModesMenu3["Taunt"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Stun && ModesMenu3["Stun"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Snare && ModesMenu3["Snare"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Polymorph && ModesMenu3["Polymorph"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Blind && ModesMenu3["Blind"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Flee && ModesMenu3["Fear"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Charm && ModesMenu3["Charm"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Suppression && ModesMenu3["Suppression"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Silence && ModesMenu3["Silence"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (Name == "zedrdeathmark" && ModesMenu3["ZedUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "vladimirhemoplague" && ModesMenu3["VladUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "fizzmarinerdoom" && ModesMenu3["FizzUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "mordekaiserchildrenofthegrave" && ModesMenu3["MordUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "poppydiplomaticimmunity" && ModesMenu3["PoppyUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
             }
-            if (type == BuffType.Stun && ModesMenu3["Stun"].Cast<CheckBox>().CurrentValue)
+            if (ModesMenu3["Qssmode"].Cast<ComboBox>().CurrentValue == 1 && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                DoQSS();
-            }
-            if (type == BuffType.Snare && ModesMenu3["Snare"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Polymorph && ModesMenu3["Polymorph"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Blind && ModesMenu3["Blind"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Flee && ModesMenu3["Fear"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Charm && ModesMenu3["Charm"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Suppression && ModesMenu3["Suppression"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (type == BuffType.Silence && ModesMenu3["Silence"].Cast<CheckBox>().CurrentValue)
-            {
-                DoQSS();
-            }
-            if (Name == "zedrdeathmark" && ModesMenu3["ZedUlt"].Cast<CheckBox>().CurrentValue)
-            {
-                UltQSS();
-            }
-            if (Name == "vladimirhemoplague" && ModesMenu3["VladUlt"].Cast<CheckBox>().CurrentValue)
-            {
-                UltQSS();
-            }
-            if (Name == "fizzmarinerdoom" && ModesMenu3["FizzUlt"].Cast<CheckBox>().CurrentValue)
-            {
-                UltQSS();
-            }
-            if (Name == "mordekaiserchildrenofthegrave" && ModesMenu3["MordUlt"].Cast<CheckBox>().CurrentValue)
-            {
-                UltQSS();
-            }
-            if (Name == "poppydiplomaticimmunity" && ModesMenu3["PoppyUlt"].Cast<CheckBox>().CurrentValue)
-            {
-                UltQSS();
+                if (type == BuffType.Taunt && ModesMenu3["Taunt"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Stun && ModesMenu3["Stun"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Snare && ModesMenu3["Snare"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Polymorph && ModesMenu3["Polymorph"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Blind && ModesMenu3["Blind"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Flee && ModesMenu3["Fear"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Charm && ModesMenu3["Charm"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Suppression && ModesMenu3["Suppression"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (type == BuffType.Silence && ModesMenu3["Silence"].Cast<CheckBox>().CurrentValue)
+                {
+                    DoQSS();
+                }
+                if (Name == "zedrdeathmark" && ModesMenu3["ZedUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "vladimirhemoplague" && ModesMenu3["VladUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "fizzmarinerdoom" && ModesMenu3["FizzUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "mordekaiserchildrenofthegrave" && ModesMenu3["MordUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
+                if (Name == "poppydiplomaticimmunity" && ModesMenu3["PoppyUlt"].Cast<CheckBox>().CurrentValue)
+                {
+                    UltQSS();
+                }
             }
         }
 
@@ -346,6 +407,10 @@ namespace GuTenTak.Ezreal
             {
                 Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssDelay"].Cast<Slider>().CurrentValue);
             }
+            if (Simitar.IsOwned() && Simitar.IsReady() && ObjectManager.Player.CountEnemiesInRange(1800) > 0)
+            {
+                Core.DelayAction(() => Simitar.Cast(), ModesMenu3["QssDelay"].Cast<Slider>().CurrentValue);
+            }
         }
 
         private static void UltQSS()
@@ -353,6 +418,10 @@ namespace GuTenTak.Ezreal
             if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue && Qss.IsOwned() && Qss.IsReady())
             {
                 Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssUltDelay"].Cast<Slider>().CurrentValue);
+            }
+            if (Simitar.IsOwned() && Simitar.IsReady())
+            {
+                Core.DelayAction(() => Simitar.Cast(), ModesMenu3["QssUltDelay"].Cast<Slider>().CurrentValue);
             }
         }
 

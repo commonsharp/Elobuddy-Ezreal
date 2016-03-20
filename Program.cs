@@ -15,7 +15,7 @@ namespace GuTenTak.Ezreal
     internal class Program
     {
         public const string ChampionName = "Ezreal";
-        public static Menu Menu, ModesMenu1, ModesMenu2, ModesMenu3, ItemMenu, DrawMenu;
+        public static Menu Menu, ModesMenu1, ModesMenu2, ModesMenu3, DrawMenu;
         public static Item Youmuu = new Item(ItemId.Youmuus_Ghostblade);
         public static Item Botrk = new Item(ItemId.Blade_of_the_Ruined_King);
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
@@ -45,14 +45,13 @@ namespace GuTenTak.Ezreal
         public static Spell.Skillshot W;
         public static Spell.Skillshot E;
         public static Spell.Skillshot R;
-        private static object target;
 
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Game_OnStart;
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Game_OnDraw;
-            Dash.OnDash += Common.Dash_OnDash;
+            //Dash.OnDash += Common.Dash_OnDash;
             Game.OnTick += OnTick;
             SkinBase = Player.Instance.SkinId;
             totem = new Item((int)ItemId.Warding_Totem_Trinket);

@@ -60,6 +60,7 @@ namespace GuTenTak.Ezreal
             Mercurial = new Item((int)ItemId.Mercurial_Scimitar);
             HPPot = new Item(2003);
             Biscuit = new Item(2010);
+            // Item
         }
 
 

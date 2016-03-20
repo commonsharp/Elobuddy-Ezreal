@@ -13,7 +13,7 @@ namespace GuTenTak.Ezreal
     internal class Common : Program
     {
         public static object HeroManager { get; private set; }
-        public static Geometry.Polygon.Circle DashCircle { get; private set; }
+        // public static Geometry.Polygon.Circle DashCircle { get; private set; }
 
         public static Obj_AI_Base GetFindObj(Vector3 Pos, string name, float range)
         {
@@ -273,7 +273,7 @@ namespace GuTenTak.Ezreal
             }
         }
 
-
+        /*
         internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
         {
             var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
@@ -284,6 +284,8 @@ namespace GuTenTak.Ezreal
                 Chat.Print("Dash!");
             }
         }
+        */
+
     /*
     internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
     {

@@ -433,7 +433,7 @@ namespace GuTenTak.Ezreal
             }
         }
 
-        
+        /*
         internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
         {
             var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
@@ -444,7 +444,7 @@ namespace GuTenTak.Ezreal
                 Chat.Print("Dash!");
             }
         }
-        
+        */
 
     /*
     internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
@@ -496,15 +496,15 @@ namespace GuTenTak.Ezreal
                         var Wp = W.GetPrediction(enemy);
                         var Ep = E.GetPrediction(enemy);
                         var Rp = R.GetPrediction(enemy);
-                        if (Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChancePercent >= 90)
+                        if (Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                         {
                             Q.Cast(Qp.CastPosition);
                         }
-                        if (W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChancePercent >= 90)
+                        if (W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                         {
                             W.Cast(Wp.CastPosition);
                         }
-                        if (R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChancePercent >= 90)
+                        if (R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                         {
                             if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
                             {

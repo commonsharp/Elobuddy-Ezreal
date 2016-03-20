@@ -12,6 +12,7 @@ namespace GuTenTak.Ezreal
 {
     internal class Common : Program
     {
+                public static int DebuffCount;
         public static object HeroManager { get; private set; }
         // public static Geometry.Polygon.Circle DashCircle { get; private set; }
 
@@ -121,6 +122,71 @@ namespace GuTenTak.Ezreal
                         }
                     }
                 }
+            }
+        }
+
+        internal static void OnBuffGain(Obj_AI_Base sender, Obj_AI_BaseBuffGainEventArgs args)
+        {
+            if (!sender.IsMe) return;
+            var type = args.Buff.Type;
+            var duration = args.Buff.EndTime - Game.Time;
+            var Name = args.Buff.Name.ToLower();
+
+            if (type == BuffType.Taunt && ModesMenu3["Taunt"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Stun && ModesMenu3["Stun"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Snare && ModesMenu3["Snare"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Polymorph && ModesMenu3["Polymorph"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Blind && ModesMenu3["Blind"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Flee && ModesMenu3["Fear"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Charm && ModesMenu3["Charm"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Suppression && ModesMenu3["Suppression"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (type == BuffType.Silence && ModesMenu3["Silence"].Cast<CheckBox>().CurrentValue)
+            {
+                DoQSS();
+            }
+            if (Name == "zedrdeathmark" && ModesMenu3["ZedUlt"].Cast<CheckBox>().CurrentValue)
+            {
+                UltQSS();
+            }
+            if (Name == "vladimirhemoplague" && ModesMenu3["VladUlt"].Cast<CheckBox>().CurrentValue)
+            {
+                UltQSS();
+            }
+            if (Name == "fizzmarinerdoom" && ModesMenu3["FizzUlt"].Cast<CheckBox>().CurrentValue)
+            {
+                UltQSS();
+            }
+            if (Name == "mordekaiserchildrenofthegrave" && ModesMenu3["MordUlt"].Cast<CheckBox>().CurrentValue)
+            {
+                UltQSS();
+            }
+            if (Name == "poppydiplomaticimmunity" && ModesMenu3["PoppyUlt"].Cast<CheckBox>().CurrentValue)
+            {
+                UltQSS();
             }
         }
 
@@ -244,9 +310,18 @@ namespace GuTenTak.Ezreal
         internal static void ItemUsage()
         {
             var target = TargetSelector.GetTarget(550, DamageType.Physical); // 550 = Botrk.Range
+            var hextech = TargetSelector.GetTarget(700, DamageType.Magical); // 700 = hextech.Range
+
             if (ModesMenu3["useYoumuu"].Cast<CheckBox>().CurrentValue && Program.Youmuu.IsOwned() && Program.Youmuu.IsReady())
             {
                 Program.Youmuu.Cast();
+            }
+            if (hextech != null)
+            {
+                if (ModesMenu3["usehextech"].Cast<CheckBox>().CurrentValue && Item.HasItem(Program.Cutlass.Id) && Item.CanUseItem(Program.Cutlass.Id))
+                {
+                    Item.UseItem(Program.hextech.Id, hextech);
+                }
             }
             if (target != null)
             {
@@ -265,6 +340,22 @@ namespace GuTenTak.Ezreal
             }
         }
 
+        internal static void DoQSS()
+        {
+            if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue && Qss.IsOwned() && Qss.IsReady() && ObjectManager.Player.CountEnemiesInRange(1800) > 0)
+            {
+                Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssDelay"].Cast<Slider>().CurrentValue);
+            }
+        }
+
+        private static void UltQSS()
+        {
+            if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue && Qss.IsOwned() && Qss.IsReady())
+            {
+                Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssUltDelay"].Cast<Slider>().CurrentValue);
+            }
+        }
+
         public static void Skinhack()
         {
             if (ModesMenu3["skinhack"].Cast<CheckBox>().CurrentValue)
@@ -273,7 +364,7 @@ namespace GuTenTak.Ezreal
             }
         }
 
-        /*
+        
         internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
         {
             var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
@@ -284,7 +375,7 @@ namespace GuTenTak.Ezreal
                 Chat.Print("Dash!");
             }
         }
-        */
+        
 
     /*
     internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)

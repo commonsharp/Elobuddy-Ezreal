@@ -20,7 +20,8 @@ namespace GuTenTak.Ezreal
         public static Item Botrk = new Item(ItemId.Blade_of_the_Ruined_King);
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
         public static Item Tear = new Item(ItemId.Tear_of_the_Goddess);
-        public static Item Manamume = new Item(ItemId.Manamune);
+        public static Item Qss = new Item(ItemId.Quicksilver_Sash);
+        public static Item hextech = new Item(ItemId.Hextech_Gunblade, 700);
         public static AIHeroClient PlayerInstance
         {
             get { return Player.Instance; }
@@ -39,7 +40,6 @@ namespace GuTenTak.Ezreal
         public static bool AutoQ { get; protected set; }
         public static float Manaah { get; protected set; }
         public static object GameEvent { get; private set; }
-        public static Item totem, Qss, Mercurial, HPPot, Biscuit;
 
         public static Spell.Skillshot Q;
         public static Spell.Skillshot W;
@@ -51,14 +51,10 @@ namespace GuTenTak.Ezreal
             Loading.OnLoadingComplete += Game_OnStart;
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Game_OnDraw;
+            Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
             //Dash.OnDash += Common.Dash_OnDash;
             Game.OnTick += OnTick;
             SkinBase = Player.Instance.SkinId;
-            totem = new Item((int)ItemId.Warding_Totem_Trinket);
-            Qss = new Item((int)ItemId.Quicksilver_Sash);
-            Mercurial = new Item((int)ItemId.Mercurial_Scimitar);
-            HPPot = new Item(2003);
-            Biscuit = new Item(2010);
             // Item
         }
 
@@ -106,7 +102,7 @@ namespace GuTenTak.Ezreal
                 //ModesMenu1.Add("useItem", new CheckBox("Use Items on Combo", true));
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("AutoHarass Configs");
-                ModesMenu1.Add("AutoHarass", new CheckBox("Use Q on AutoHarass", true));
+                ModesMenu1.Add("AutoHarass", new CheckBox("Use Q on AutoHarass", false));
 
                 /*
                 ModesMenu1.Add("Snipe", new CheckBox("Use Q on Dashing", true));
@@ -149,15 +145,36 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
                 ModesMenu3.Add("ManaFlQ", new Slider("Q Mana %", 35));
                 
-                ModesMenu3.AddLabel("Item Configs"); // Thanks Hi iM Ezreal
+                ModesMenu3.AddLabel("Item Usage on Combo");
                 ModesMenu3.Add("useYoumuu", new CheckBox("Use Youmuu", true));
+                ModesMenu3.Add("usehextech", new CheckBox("Use Hextech", true));
                 ModesMenu3.Add("useBotrk", new CheckBox("Use Botrk & Cutlass", true));
+                ModesMenu3.Add("useQss", new CheckBox("Use QuickSilver", true));
                 ModesMenu3.Add("minHPBotrk", new Slider("Min health to use Botrk %", 80));
                 ModesMenu3.Add("enemyMinHPBotrk", new Slider("Min enemy health to use Botrk %", 80));
 
+                ModesMenu3.AddLabel("QSS Configs");
+                ModesMenu3.Add("stun", new CheckBox("Stun", true));
+                ModesMenu3.Add("blind", new CheckBox("Blind", true));
+                ModesMenu3.Add("charm", new CheckBox("Charm", true));
+                ModesMenu3.Add("suppression", new CheckBox("Suppression", true));
+                ModesMenu3.Add("polymorph", new CheckBox("Polymorph", true));
+                ModesMenu3.Add("fear", new CheckBox("Fear", true));
+                ModesMenu3.Add("sleep", new CheckBox("Sleep", true));
+                ModesMenu3.Add("silence", new CheckBox("Silence", false));
+                ModesMenu3.Add("QssDelay", new Slider("Use QSS Delay(ms)", 250, 0, 1000));
+
+                ModesMenu3.AddLabel("QSS Ult Configs");
+                ModesMenu3.Add("ZedUlt", new CheckBox("Zed R", true));
+                ModesMenu3.Add("VladUlt", new CheckBox("Vladimir R", true));
+                ModesMenu3.Add("FizzUlt", new CheckBox("Fizz R", true));
+                ModesMenu3.Add("MordUlt", new CheckBox("Mordekaiser R", true));
+                ModesMenu3.Add("PoppyUlt", new CheckBox("Poppy R", true));
+                ModesMenu3.Add("QssUltDelay", new Slider("Use QSS Delay(ms) for Ult", 250, 0, 1000));
+
                 ModesMenu3.AddLabel("Skin Hack");
                 ModesMenu3.Add("skinhack", new CheckBox("Activate Skin hack", false));
-                ModesMenu3.Add("skinId", new ComboBox("Skin Hack", 0, "Default", "1", "2", "3", "4", "5", "6", "7", "8"));
+                ModesMenu3.Add("skinId", new ComboBox("Skin Mode", 0, "Default", "1", "2", "3", "4", "5", "6", "7", "8"));
 
                 DrawMenu = Menu.AddSubMenu("Draws", "DrawEzreal");
                 DrawMenu.Add("drawQ", new CheckBox(" Draw Q", true));

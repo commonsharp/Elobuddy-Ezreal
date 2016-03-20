@@ -154,14 +154,14 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("enemyMinHPBotrk", new Slider("Min enemy health to use Botrk %", 80));
 
                 ModesMenu3.AddLabel("QSS Configs");
-                ModesMenu3.Add("stun", new CheckBox("Stun", true));
-                ModesMenu3.Add("blind", new CheckBox("Blind", true));
-                ModesMenu3.Add("charm", new CheckBox("Charm", true));
-                ModesMenu3.Add("suppression", new CheckBox("Suppression", true));
-                ModesMenu3.Add("polymorph", new CheckBox("Polymorph", true));
-                ModesMenu3.Add("fear", new CheckBox("Fear", true));
-                ModesMenu3.Add("sleep", new CheckBox("Sleep", true));
-                ModesMenu3.Add("silence", new CheckBox("Silence", false));
+                ModesMenu3.Add("Stun", new CheckBox("Stun", true));
+                ModesMenu3.Add("Blind", new CheckBox("Blind", true));
+                ModesMenu3.Add("Charm", new CheckBox("Charm", true));
+                ModesMenu3.Add("Suppression", new CheckBox("Suppression", true));
+                ModesMenu3.Add("Polymorph", new CheckBox("Polymorph", true));
+                ModesMenu3.Add("Fear", new CheckBox("Fear", true));
+                ModesMenu3.Add("Taunt", new CheckBox("Taunt", true));
+                ModesMenu3.Add("Silence", new CheckBox("Silence", false));
                 ModesMenu3.Add("QssDelay", new Slider("Use QSS Delay(ms)", 250, 0, 1000));
 
                 ModesMenu3.AddLabel("QSS Ult Configs");

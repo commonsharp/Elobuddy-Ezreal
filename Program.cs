@@ -98,7 +98,6 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.Add("ComboA", new CheckBox("Use AA => Q Combo", false));
                 ModesMenu1.Add("ComboW", new CheckBox("Use W on Combo", true));
                 ModesMenu1.Add("ComboR", new CheckBox("Use R on Combo", true));
-                ModesMenu1.Add("ComboSR", new KeyBind("Use R on Semi-Auto", false, KeyBind.BindTypes.HoldActive, 'T'));
                 ModesMenu1.Add("ManaCW", new Slider("Use W Mana %", 30));
                 ModesMenu1.Add("RCount", new Slider("Cast R if Will Hit >=", 3, 2, 5));
                 ModesMenu1.AddSeparator();
@@ -298,6 +297,10 @@ namespace GuTenTak.Ezreal
                     if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                     {
                         Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+                    }
+                    else
+                    {
+                        Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
                     }
                 }
             Common.KillSteal();

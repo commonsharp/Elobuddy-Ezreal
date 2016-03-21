@@ -47,7 +47,6 @@ namespace GuTenTak.Ezreal
                     Q.Cast(Qp.CastPosition);
                 }
             }
-            Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
         }
 
         public static void Combo()
@@ -453,32 +452,28 @@ namespace GuTenTak.Ezreal
         {
             if (Program.ModesMenu1["KS"].Cast<CheckBox>().CurrentValue)
             {
-
                 foreach (var enemy in EntityManager.Heroes.Enemies.Where(a => !a.IsDead && !a.IsZombie && a.Health > 0))
             {
                 if (enemy == null) return;
-
-
                 if (enemy.IsValidTarget(R.Range) && enemy.HealthPercent <= 40)
                 {
-
-                        if (DamageLib.QCalc(enemy) + DamageLib.WCalc(enemy) + DamageLib.RCalc(enemy) >= enemy.Health)
-                        {
-                            var Qp = Q.GetPrediction(enemy);
-                            var Wp = W.GetPrediction(enemy);
-                            var Ep = E.GetPrediction(enemy);
-                            var Rp = R.GetPrediction(enemy);
-                            if (Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                        var Qp = Q.GetPrediction(enemy);
+                        var Wp = W.GetPrediction(enemy);
+                        var Rp = R.GetPrediction(enemy);
+                        if (DamageLib.QCalc(enemy) >= enemy.Health && Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                             {
-                                Q.Cast(Qp.CastPosition);
+                           
+                            Q.Cast(Qp.CastPosition);
                             }
-                            if (W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                            if (DamageLib.WCalc(enemy) >= enemy.Health && W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                             {
-                                W.Cast(Wp.CastPosition);
+                            
+                            W.Cast(Wp.CastPosition);
                             }
-                            if (R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                            if (DamageLib.RCalc(enemy) >= enemy.Health && R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                             {
-                                if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
+                           
+                            if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
                                 {
                                     R.Cast(Rp.CastPosition);
                                 }
@@ -487,7 +482,6 @@ namespace GuTenTak.Ezreal
                     }
                 }
             }
-        }
         public static new void AutoQ()
         {
             {

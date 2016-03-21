@@ -16,6 +16,7 @@ namespace GuTenTak.Ezreal
     {
         public const string ChampionName = "Ezreal";
         public static Menu Menu, ModesMenu1, ModesMenu2, ModesMenu3, DrawMenu;
+        public static int SkinBase;
         public static Item Youmuu = new Item(ItemId.Youmuus_Ghostblade);
         public static Item Botrk = new Item(ItemId.Blade_of_the_Ruined_King);
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
@@ -23,11 +24,11 @@ namespace GuTenTak.Ezreal
         public static Item Qss = new Item(ItemId.Quicksilver_Sash);
         public static Item Simitar = new Item(ItemId.Mercurial_Scimitar);
         public static Item hextech = new Item(ItemId.Hextech_Gunblade, 700);
+
         public static AIHeroClient PlayerInstance
         {
             get { return Player.Instance; }
         }
-        public static int SkinBase;
         private static float HealthPercent()
         {
             return (PlayerInstance.Health / PlayerInstance.MaxHealth) * 100;
@@ -50,19 +51,18 @@ namespace GuTenTak.Ezreal
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Game_OnStart;
-            Game.OnUpdate += Game_OnUpdate;
-            Drawing.OnDraw += Game_OnDraw;
-            Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
-            //Dash.OnDash += Common.Dash_OnDash;
-            Game.OnTick += OnTick;
-            SkinBase = Player.Instance.SkinId;
-            // Item
         }
 
 
         static void Game_OnStart(EventArgs args)
         {
-
+            Game.OnUpdate += Game_OnUpdate;
+            Drawing.OnDraw += Game_OnDraw;
+            Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
+            //Dash.OnDash += Common.Dash_OnDash;
+            Game.OnTick += OnTick;
+            // Item
+            SkinBase = Player.Instance.SkinId;
             try
             {
                 if (ChampionName != PlayerInstance.BaseSkinName)
@@ -100,19 +100,9 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.Add("ManaCW", new Slider("Use W Mana %", 30));
                 ModesMenu1.Add("RCount", new Slider("Cast R if Will Hit >=", 3, 2, 5));
                 ModesMenu1.AddSeparator();
-                //ModesMenu1.Add("useItem", new CheckBox("Use Items on Combo", true));
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("AutoHarass Configs");
                 ModesMenu1.Add("AutoHarass", new CheckBox("Use Q on AutoHarass", false));
-
-                /*
-                ModesMenu1.Add("Snipe", new CheckBox("Use Q on Dashing", true));
-                var target = TargetSelector.GetTarget(Q.Range - 50, DamageType.Physical);
-                foreach (var source in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy))
-                {
-                    ModesMenu1.Add(source.ChampionName + "Snipe", new CheckBox("Snipe " + source.ChampionName, true));
-                }
-                */
 
                 ModesMenu1.Add("ManaAuto", new Slider("Mana %", 80));
                 ModesMenu1.AddLabel("Harass Configs");
@@ -140,7 +130,6 @@ namespace GuTenTak.Ezreal
                 ModesMenu3 = Menu.AddSubMenu("Misc", "Modes3Ezreal");
                 ModesMenu3.AddLabel("Misc Configs");
                 ModesMenu3.Add("AntiGap", new CheckBox("Use E for Anti-Gapcloser", true));
-                // ModesMenu3.Add("Flee", new KeyBind("Flee", false, KeyBind.BindTypes.HoldActive, "G".ToCharArray()[0]));
                 ModesMenu3.AddLabel("Flee Configs");
                 ModesMenu3.Add("FleeQ", new CheckBox("Use Q on Flee", true));
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
@@ -195,112 +184,134 @@ namespace GuTenTak.Ezreal
         }
         private static void Game_OnDraw(EventArgs args)
         {
-            if (DrawMenu["drawQ"].Cast<CheckBox>().CurrentValue)
+
+            try
             {
-                if (Q.IsReady() && Q.IsLearned)
+                if (DrawMenu["drawQ"].Cast<CheckBox>().CurrentValue)
                 {
-                    Circle.Draw(Color.White, Q.Range, Player.Instance.Position);
+                    if (Q.IsReady() && Q.IsLearned)
+                    {
+                        Circle.Draw(Color.White, Q.Range, Player.Instance.Position);
+                    }
                 }
-            }
-            if (DrawMenu["drawW"].Cast<CheckBox>().CurrentValue)
-            {
-                if (W.IsReady() && W.IsLearned)
+                if (DrawMenu["drawW"].Cast<CheckBox>().CurrentValue)
                 {
-                    Circle.Draw(Color.White, W.Range, Player.Instance.Position);
+                    if (W.IsReady() && W.IsLearned)
+                    {
+                        Circle.Draw(Color.White, W.Range, Player.Instance.Position);
+                    }
                 }
-            }
-            if (DrawMenu["drawR"].Cast<CheckBox>().CurrentValue)
-            {
+                if (DrawMenu["drawR"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (R.IsReady() && R.IsLearned)
+                    {
+                        Circle.Draw(Color.White, R.Range, Player.Instance.Position);
+                    }
+                }
+                if (DrawMenu["drawXR"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (R.IsReady() && R.IsLearned)
+                    {
+                        Circle.Draw(Color.Red, 700, Player.Instance.Position);
+                    }
+                }
+                if (DrawMenu["drawXFleeQ"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (Q.IsReady() && Q.IsLearned)
+                    {
+                        Circle.Draw(Color.Red, 400, Player.Instance.Position);
+                    }
+                }
+
                 if (R.IsReady() && R.IsLearned)
                 {
-                    Circle.Draw(Color.White, R.Range, Player.Instance.Position);
+                    Circle.Draw(Color.Black, R.Range, Player.Instance.Position);
                 }
             }
-            if (DrawMenu["drawXR"].Cast<CheckBox>().CurrentValue)
+            catch (Exception e)
             {
-                if (R.IsReady() && R.IsLearned)
-                {
-                    Circle.Draw(Color.Red, 700, Player.Instance.Position);
-                }
-            }
-            if (DrawMenu["drawXFleeQ"].Cast<CheckBox>().CurrentValue)
-            {
-                if (Q.IsReady() && Q.IsLearned)
-                {
-                    Circle.Draw(Color.Red, 400, Player.Instance.Position);
-                }
-            }
 
-            if (R.IsReady() && R.IsLearned)
-            {
-                Circle.Draw(Color.Black, R.Range, Player.Instance.Position);
             }
-
         }
         static void Game_OnUpdate(EventArgs args)
         {
-            var AutoHarass = ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue;
-            var ManaAuto = ModesMenu1["ManaAuto"].Cast<Slider>().CurrentValue;
-
-            Common.Skinhack();
-
-            if (AutoHarass && ManaAuto <= _Player.ManaPercent)
+            try
             {
-                //Thanks.KEzreal
-                Common.AutoQ();
+                var AutoHarass = ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue;
+                var ManaAuto = ModesMenu1["ManaAuto"].Cast<Slider>().CurrentValue;
+
+                Common.Skinhack();
+
+                if (AutoHarass && ManaAuto <= _Player.ManaPercent)
+                {
+                    //Thanks.KEzreal
+                    Common.AutoQ();
+                }
+
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+                {
+                    Common.Combo();
+                    Common.ItemUsage();
+                }
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
+                {
+                    Common.Harass();
+                }
+
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+                {
+
+                    Common.LaneClear();
+
+                }
+
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
+                {
+
+                    Common.JungleClear();
+                }
+
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
+                {
+                    Common.LastHit();
+
+                }
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
+                {
+                    Common.Flee();
+
+                }
             }
-
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            catch (Exception e)
             {
-                Common.Combo();
-                Common.ItemUsage();
-            }
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
-            {
-                Common.Harass();
-            }
-
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
-            {
-
-                Common.LaneClear();
-
-            }
-
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
-            {
-
-                Common.JungleClear();
-            }
-
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
-            {
-                Common.LastHit();
-
-            }
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
-            {
-                Common.Flee();
 
             }
         }
         public static void OnTick(EventArgs args)
         {
-            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
+            try
             {
-                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+
+                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
                 {
-                    Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+                    if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+                    {
+                        Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+                    }
+                }
+                Common.KillSteal();
+                if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
+                {
+                    Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
+                }
+                else
+                {
+                    Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
                 }
             }
-            Common.KillSteal();
-            if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
+            catch (Exception e)
             {
-                Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
-            }
-            else
-            {
-                Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
+
             }
         }
     }

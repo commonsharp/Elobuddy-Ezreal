@@ -69,7 +69,7 @@ namespace GuTenTak.Ezreal
 
             if (Q.IsInRange(Target) && Q.IsReady() && useQ && Qp.HitChance >= HitChance.High)
             {
-                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && !ObjectManager.Player.IsInAutoAttackRange(Target))
+                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && !ObjectManager.Player.IsInAutoAttackRange(Target) && !Target.IsInvulnerable)
                 {
                     Q.Cast(Qp.CastPosition);
                 }
@@ -82,11 +82,11 @@ namespace GuTenTak.Ezreal
                 }
             }
 
-            if (W.IsInRange(Target) && W.IsReady() && useW && _Player.ManaPercent >= Program.ModesMenu1["ManaCW"].Cast<Slider>().CurrentValue && Wp.HitChance >= HitChance.High)
+            if (W.IsInRange(Target) && W.IsReady() && useW && _Player.ManaPercent >= Program.ModesMenu1["ManaCW"].Cast<Slider>().CurrentValue && Wp.HitChance >= HitChance.High && !Target.IsInvulnerable)
             {
                 W.Cast(Wp.CastPosition);
             }
-            if (R.IsInRange(Target) && R.IsReady() && useR)
+            if (R.IsInRange(Target) && R.IsReady() && useR && !Target.IsInvulnerable)
             {
                 if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
                 {//Thanks to Hi I'm Ezreal

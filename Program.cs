@@ -97,6 +97,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.Add("ComboA", new CheckBox("Use AA => Q Combo", false));
                 ModesMenu1.Add("ComboW", new CheckBox("Use W on Combo", true));
                 ModesMenu1.Add("ComboR", new CheckBox("Use R on Combo", true));
+                ModesMenu1.Add("ComboSR", new KeyBind("Use R on Semi-Auto", false, KeyBind.BindTypes.HoldActive, 'T'));
                 ModesMenu1.Add("ManaCW", new Slider("Use W Mana %", 30));
                 ModesMenu1.Add("RCount", new Slider("Cast R if Will Hit >=", 3, 2, 5));
                 ModesMenu1.AddSeparator();
@@ -290,19 +291,27 @@ namespace GuTenTak.Ezreal
         }
         public static void OnTick(EventArgs args)
         {
-                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
+            if (ModesMenu3["ComboSR"].Cast<KeyBind>().CurrentValue)
+            {
+                var Target = TargetSelector.GetTarget(R.Range, DamageType.Mixed);
+                var Rp = R.GetPrediction(Target);
+                R.Cast(Rp.CastPosition);
+
+            }
+
+            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
                 {
                     if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                     {
                         Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
                     }
                 }
-                Common.KillSteal();
-                if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
+            Common.KillSteal();
+            if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
                 {
                     Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
                 }
-                else
+            else
                 {
                     Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
                 }

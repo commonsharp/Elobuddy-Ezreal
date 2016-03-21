@@ -480,9 +480,10 @@ namespace GuTenTak.Ezreal
 
         public static void KillSteal()
         {
+            if (Program.ModesMenu1["KS"].Cast<CheckBox>().CurrentValue)
+            {
 
-
-            foreach (var enemy in EntityManager.Heroes.Enemies.Where(a => !a.IsDead && !a.IsZombie && a.Health > 0))
+                foreach (var enemy in EntityManager.Heroes.Enemies.Where(a => !a.IsDead && !a.IsZombie && a.Health > 0))
             {
                 if (enemy == null) return;
 
@@ -490,25 +491,26 @@ namespace GuTenTak.Ezreal
                 if (enemy.IsValidTarget(R.Range) && enemy.HealthPercent <= 40)
                 {
 
-                    if (DamageLib.QCalc(enemy) + DamageLib.WCalc(enemy) + DamageLib.RCalc(enemy) >= enemy.Health)
-                    {
-                        var Qp = Q.GetPrediction(enemy);
-                        var Wp = W.GetPrediction(enemy);
-                        var Ep = E.GetPrediction(enemy);
-                        var Rp = R.GetPrediction(enemy);
-                        if (Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                        if (DamageLib.QCalc(enemy) + DamageLib.WCalc(enemy) + DamageLib.RCalc(enemy) >= enemy.Health)
                         {
-                            Q.Cast(Qp.CastPosition);
-                        }
-                        if (W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
-                        {
-                            W.Cast(Wp.CastPosition);
-                        }
-                        if (R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
-                        {
-                            if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
+                            var Qp = Q.GetPrediction(enemy);
+                            var Wp = W.GetPrediction(enemy);
+                            var Ep = E.GetPrediction(enemy);
+                            var Rp = R.GetPrediction(enemy);
+                            if (Q.IsReady() && Q.IsInRange(enemy) && Program.ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Qp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                             {
-                                R.Cast(Rp.CastPosition);
+                                Q.Cast(Qp.CastPosition);
+                            }
+                            if (W.IsReady() && W.IsInRange(enemy) && Program.ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && Wp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                            {
+                                W.Cast(Wp.CastPosition);
+                            }
+                            if (R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                            {
+                                if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
+                                {
+                                    R.Cast(Rp.CastPosition);
+                                }
                             }
                         }
                     }

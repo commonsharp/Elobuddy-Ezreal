@@ -112,6 +112,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu1.Add("ManaHW", new Slider("Mana %", 60));
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("Kill Steal Configs");
+                ModesMenu1.Add("KS", new CheckBox("Use KillSteal", true));
                 ModesMenu1.Add("KQ", new CheckBox("Use Q on KillSteal", true));
                 ModesMenu1.Add("KW", new CheckBox("Use W on KillSteal", true));
                 ModesMenu1.Add("KR", new CheckBox("Use R on KillSteal", true));
@@ -289,9 +290,6 @@ namespace GuTenTak.Ezreal
         }
         public static void OnTick(EventArgs args)
         {
-            try
-            {
-
                 if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
                 {
                     if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
@@ -309,10 +307,5 @@ namespace GuTenTak.Ezreal
                     Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
                 }
             }
-            catch (Exception e)
-            {
-
-            }
-        }
     }
 }

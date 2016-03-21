@@ -433,43 +433,14 @@ namespace GuTenTak.Ezreal
             }
         }
 
-        /*
-        internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
-        {
-            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-            var Qp = Q.GetPrediction(Target);
-            if (Qp.HitChance <= HitChance.Dashing)
-            {
-                Q.Cast(Qp.CastPosition);
-                Chat.Print("Dash!");
-            }
-        }
-        */
-
-    /*
-    internal static void Dash_OnDash(Obj_AI_Base sender, Dash.DashEventArgs e)
-    {
-        if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue)
-        {
-            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-            var Qp = Q.GetPrediction(Target);
-            if (Q.GetPrediction(Target).HitChance >= HitChance.Dashing)
-            {
-                Q.Cast(Q.GetPrediction(Target).CastPosition);
-            }
-        }
-        Chat.Print("Dash!");
-    }
-    */
-
-    internal static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
+        internal static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
         {
             if (Program.ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
             {
                 string[] herogapcloser =
                 {
                 "Braum", "Ekko", "Elise", "Fiora", "Kindred", "Lucian", "Yi", "Nidalee", "Quinn", "Riven", "Shaco", "Sion", "Vayne", "Yasuo", "Graves", "Azir", "Gnar", "Irelia", "Kalista"
-            };
+                };
                 if (sender.IsEnemy && sender.GetAutoAttackRange() >= ObjectManager.Player.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
                 {
                     var diffGapCloser = gapcloser.End - gapcloser.Start;
@@ -517,50 +488,6 @@ namespace GuTenTak.Ezreal
                 }
             }
         }
-
-        /*
-        public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
-        {
-            if (Program.ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
-                {
-                string[] herogapcloser =
-                {
-                "Braum", "Ekko", "Elise", "Fiora", "Kindred", "Lucian", "Yi", "Nidalee", "Quinn", "Riven", "Shaco", "Sion", "Vayne", "Yasuo", "Graves", "Azir", "Gnar", "Irelia", "Kalista"
-            };
-                if (sender.IsEnemy && sender.GetAutoAttackRange() >= ObjectManager.Player.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
-                {
-                    var diffGapCloser = gapcloser.End - gapcloser.Start;
-                    E.Cast(ObjectManager.Player.ServerPosition + diffGapCloser);
-                }
-            }
-        }*/
-
-        /*
-var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue) //&& ModesMenu1["Snipe " + Target.ChampionName].Cast<CheckBox>().CurrentValue)
-{
-        var pred = Q.GetPrediction(Target);
-    if (Q.IsReady() && pred.HitChance >= HitChance.Dashing)
-    {
-        Q.Cast(pred.CastPosition);
-    }
-}
-*/
-        /*
-        public static void Snipe()
-        {
-            var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-            if (ModesMenu1["Snipe"].Cast<CheckBox>().CurrentValue) //&& ModesMenu1["Snipe " + Target.ChampionName].Cast<CheckBox>().CurrentValue)
-            {
-                if (Q.IsInRange(Target) && Q.IsReady() && Q.GetPrediction(Target).HitChance == HitChance.Dashing)
-                {
-                    Prediction.Position.GetDashPos(Target)
-                    var Qpr = Q.GetPrediction(Target);
-                    Q.Cast(Target
-                }
-            }
-        }*/
-
         public static new void AutoQ()
         {
             {

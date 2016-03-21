@@ -59,6 +59,7 @@ namespace GuTenTak.Ezreal
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
+            Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
             //Dash.OnDash += Common.Dash_OnDash;
             Game.OnTick += OnTick;
             // Item
@@ -244,16 +245,6 @@ namespace GuTenTak.Ezreal
 
                 Common.Skinhack();
 
-                if (ModesMenu3["ComboSR"].Cast<KeyBind>().CurrentValue)
-                {
-                    var Target = TargetSelector.GetTarget(R.Range, DamageType.Mixed);
-                    var Rp = R.GetPrediction(Target);
-                    if (R.IsInRange(Target) && R.IsReady() && Rp.HitChance >= HitChance.High)
-                    {
-                        R.Cast(Rp.CastPosition);
-                    }
-                }
-
                 if (AutoHarass && ManaAuto <= _Player.ManaPercent)
                 {
                     //Thanks.KEzreal
@@ -310,14 +301,6 @@ namespace GuTenTak.Ezreal
                     }
                 }
             Common.KillSteal();
-            if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
-            {
-                Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
-            }
-            else
-            {
-                Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
-            }
         }
     }
 }

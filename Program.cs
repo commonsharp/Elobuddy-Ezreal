@@ -295,8 +295,10 @@ namespace GuTenTak.Ezreal
             {
                 var Target = TargetSelector.GetTarget(R.Range, DamageType.Mixed);
                 var Rp = R.GetPrediction(Target);
-                R.Cast(Rp.CastPosition);
-
+                if (R.IsInRange(Target) && R.IsReady() && Rp.HitChance >= HitChance.High)
+                {
+                    R.Cast(Rp.CastPosition);
+                }
             }
 
             if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)

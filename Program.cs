@@ -291,18 +291,10 @@ namespace GuTenTak.Ezreal
         }
         public static void OnTick(EventArgs args)
         {
-
-            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
-                {
-                    if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
-                    {
-                        Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
-                    }
-                    else
-                    {
-                        Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
-                    }
-                }
+            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            {
+                Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+            }
             Common.KillSteal();
         }
     }

@@ -443,7 +443,7 @@ namespace GuTenTak.Ezreal
                 string[] herogapcloser =
                 {
                 "Braum", "Ekko", "Elise", "Fiora", "Kindred", "Lucian", "Yi", "Nidalee", "Quinn", "Riven", "Shaco", "Sion", "Vayne", "Yasuo", "Graves", "Azir", "Gnar", "Irelia", "Kalista"
-                };
+            };
                 if (sender.IsEnemy && sender.GetAutoAttackRange() >= ObjectManager.Player.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
                 {
                     var diffGapCloser = gapcloser.End - gapcloser.Start;
@@ -474,7 +474,7 @@ namespace GuTenTak.Ezreal
                             
                             W.Cast(Wp.CastPosition);
                             }
-                            if (DamageLib.RCalc(enemy) >= enemy.Health && R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
+                            if (DamageLib.RCalc(enemy) * 0.7f >= enemy.Health && R.IsReady() && R.IsInRange(enemy) && Program.ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && Rp.HitChance >= HitChance.High && !enemy.IsInvulnerable)
                             {
                            
                             if (ObjectManager.Player.CountEnemiesInRange(700) == 0)
@@ -499,5 +499,20 @@ namespace GuTenTak.Ezreal
                 }
             }
         }
+        public static void StackTear()
+        {
+            if (Program.ModesMenu3["StackTear"].Cast<CheckBox>().CurrentValue)
+                {
+                if (Player.Instance.IsInShopRange())
+                {
+                    if (Program.Tear.IsOwned())
+                    {
+                        Q.Cast(Game.CursorPos);
+                        W.Cast(Game.CursorPos);
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -132,6 +132,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu3 = Menu.AddSubMenu("Misc", "Modes3Ezreal");
                 ModesMenu3.AddLabel("Misc Configs");
                 ModesMenu3.Add("AntiGap", new CheckBox("Use E for Anti-Gapcloser", true));
+                ModesMenu3.Add("StackTear", new CheckBox("Auto StackTear in Shop ", true));
                 ModesMenu3.AddLabel("Flee Configs");
                 ModesMenu3.Add("FleeQ", new CheckBox("Use Q on Flee", true));
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
@@ -300,6 +301,7 @@ namespace GuTenTak.Ezreal
                 Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
             }
             Common.KillSteal();
+            Common.StackTear();
         }
     }
 }

@@ -295,6 +295,10 @@ namespace GuTenTak.Ezreal
             {
                 Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
             }
+            else
+            {
+                Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
+            }
             Common.KillSteal();
         }
     }

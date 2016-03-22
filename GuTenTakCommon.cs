@@ -47,6 +47,10 @@ namespace GuTenTak.Ezreal
                     Q.Cast(Qp.CastPosition);
                 }
             }
+            else
+            {
+                Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
+            }
         }
 
         public static void Combo()

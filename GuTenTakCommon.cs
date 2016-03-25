@@ -331,14 +331,19 @@ namespace GuTenTak.Ezreal
 
         public static void LastHit()
         {
-            var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
-                var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health) && m.IsEnemy && !m.IsDead && m.IsValid && !m.IsInvulnerable && m.IsInRange(Player.Instance.Position, Q.Range));
-                if (qminions == null) return;
-            if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
+            var source =
+                EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault
+                    (m =>
+                        m.IsValidTarget(Q.Range) &&
+                        (Player.Instance.GetSpellDamage(m, SpellSlot.Q) > m.TotalShieldHealth() && m.IsEnemy && !m.IsDead && m.IsValid && !m.IsInvulnerable));
+
+            if (source == null) return;
+
+            if (Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
             {
-                if (Q.GetPrediction(qminions).CollisionObjects.Where(m => m.IsEnemy && !m.IsDead && m.IsValid && !m.IsInvulnerable).Count() >= 0)
+                if (ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Q.IsReady())
                 {
-                    Q.Cast(qminions);
+                    Q.Cast(source);
                 }
             }
         }

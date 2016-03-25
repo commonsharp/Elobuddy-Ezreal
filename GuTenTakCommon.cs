@@ -38,18 +38,24 @@ namespace GuTenTak.Ezreal
 
         internal static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if (ModesMenu1["ComboQ"].Cast<CheckBox>().CurrentValue)
-            {
-                var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-                var Qp = Q.GetPrediction(Target);
-                if (Q.IsInRange(Target) && Q.IsReady() && Qp.HitChance >= HitChance.High)
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                 {
-                    Q.Cast(Qp.CastPosition);
+                if (target == null || !(target is AIHeroClient) || target.IsDead || target.IsInvulnerable || !target.IsEnemy || target.IsPhysicalImmune || target.IsZombie)
+                    return;
+                var useQ = ModesMenu1["ComboQ"].Cast<CheckBox>().CurrentValue;
+                var enemy = target as AIHeroClient;
+                if (enemy == null)
+                    return;
+
+                if (useQ)
+                {
+                    var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+                    var Qp = Q.GetPrediction(Target);
+                    if (Q.IsInRange(Target) && Q.IsReady() && Qp.HitChance >= HitChance.High)
+                    {
+                        Q.Cast(Qp.CastPosition);
+                    }
                 }
-            }
-            else
-            {
-                Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
             }
         }
 

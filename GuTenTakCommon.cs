@@ -280,39 +280,35 @@ namespace GuTenTak.Ezreal
         }
         public static void LaneClear()
         {
-            if (ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program._Player.ManaPercent >= Program.ModesMenu2["ManaL"].Cast<Slider>().CurrentValue)
+            if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program._Player.ManaPercent >= Program.ModesMenu2["ManaL"].Cast<Slider>().CurrentValue)
             {
-                bool lastQ = false;
-                var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
-                    Player.Instance.ServerPosition, Q.Range).OrderBy(h => h.Health);
+                var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsEnemy && !t.IsDead && t.IsValid && !t.IsInvulnerable && t.IsInRange(Player.Instance.Position, Q.Range));
+                foreach (var m in minions)
                 {
-                    if (minions.Any() && !lastQ)
+                    if (Q.GetPrediction(m).CollisionObjects.Where(t => t.IsEnemy && !t.IsDead && t.IsValid && !t.IsInvulnerable).Count() >= 0)
                     {
-                        var getHealthyCs = minions.GetEnumerator();
-                        while (getHealthyCs.MoveNext())
-                        {
-                            Q.Cast(Q.GetPrediction(minions.Last()).CastPosition);
-                        }
+                        Q.Cast(m);
+                        break;
                     }
                 }
             }
         }
 
       //    var useQ = ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue;
-    //      var minions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget(Q.Range));
-    //      var minion = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsInRange(Player.Instance.Position, W.Range) && !t.IsDead && t.IsValid && !t.IsInvulnerable).Count();
-    //      if (minions == null) return;
-    //      if ((_Player.ManaPercent <= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue))
-    //      {
-    //          return;
-    //      }
-    //
-    //      if (useQ && Q.IsReady() && Q.IsInRange(minions))
-    //      {
-    //          Q.Cast(minions);
-    //      }
-    //
-     // }
+      //      var minions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget(Q.Range));
+      //      var minion = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsInRange(Player.Instance.Position, W.Range) && !t.IsDead && t.IsValid && !t.IsInvulnerable).Count();
+      //      if (minions == null) return;
+      //      if ((_Player.ManaPercent <= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue))
+      //      {
+      //          return;
+      //      }
+      //
+      //      if (useQ && Q.IsReady() && Q.IsInRange(minions))
+      //      {
+      //          Q.Cast(minions);
+      //      }
+      //
+      // }
         public static void JungleClear()
         {
 
@@ -335,14 +331,32 @@ namespace GuTenTak.Ezreal
 
         public static void LastHit()
         {
-                var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
-                var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health));
+            var useQ = Program.ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue;
+                var qminions = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(m => m.IsValidTarget((Program.Q.Range)) && (DamageLib.QCalc(m) > m.Health) && m.IsEnemy && !m.IsDead && m.IsValid && !m.IsInvulnerable && m.IsInRange(Player.Instance.Position, Q.Range));
                 if (qminions == null) return;
-                if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
+            if (Q.IsReady() && (Program._Player.Distance(qminions) <= Program._Player.GetAutoAttackRange()) && useQ && qminions.Health < DamageLib.QCalc(qminions) && Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
+            {
+                if (Q.GetPrediction(qminions).CollisionObjects.Where(m => m.IsEnemy && !m.IsDead && m.IsValid && !m.IsInvulnerable).Count() >= 0)
                 {
                     Q.Cast(qminions);
                 }
+            }
         }
+
+        /*
+if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program._Player.ManaPercent >= Program.ModesMenu2["ManaL"].Cast<Slider>().CurrentValue)
+{
+    var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsEnemy && !t.IsDead && t.IsValid && !t.IsInvulnerable && t.IsInRange(Player.Instance.Position, Q.Range));
+    foreach (var m in minions)
+    {
+        if (Q.GetPrediction(m).CollisionObjects.Where(t => t.IsEnemy && !t.IsDead && t.IsValid && !t.IsInvulnerable).Count() >= 0)
+        {
+            Q.Cast(m);
+            break;
+        }
+    }
+}
+*/
 
         public static void Flee()
         {

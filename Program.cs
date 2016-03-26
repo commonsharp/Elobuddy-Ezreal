@@ -56,6 +56,11 @@ namespace GuTenTak.Ezreal
 
         static void Game_OnStart(EventArgs args)
         {
+            if (ChampionName != PlayerInstance.BaseSkinName)
+            {
+                return;
+            }
+                
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
@@ -66,11 +71,6 @@ namespace GuTenTak.Ezreal
             SkinBase = Player.Instance.SkinId;
             try
             {
-                if (ChampionName != PlayerInstance.BaseSkinName)
-                {
-                    return;
-                }
-
                 Q = new Spell.Skillshot(SpellSlot.Q, 1150, SkillShotType.Linear, 250, 2000, 60);
                 Q.AllowedCollisionCount = 0;
                 W = new Spell.Skillshot(SpellSlot.W, 1000, SkillShotType.Linear, 250, 1600, 80);

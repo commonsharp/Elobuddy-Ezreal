@@ -65,7 +65,6 @@ namespace GuTenTak.Ezreal
             Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
             Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
-            //Dash.OnDash += Common.Dash_OnDash;
             Game.OnTick += OnTick;
             // Item
             SkinBase = Player.Instance.SkinId;
@@ -240,9 +239,9 @@ namespace GuTenTak.Ezreal
 
                 Common.Skinhack();
 
+
                 if (AutoHarass && ManaAuto <= _Player.ManaPercent)
                 {
-                    //Thanks.KEzreal
                     Common.AutoQ();
                 }
 

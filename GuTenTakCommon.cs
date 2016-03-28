@@ -347,7 +347,7 @@ namespace GuTenTak.Ezreal
 
             if (Program._Player.ManaPercent >= Program.ModesMenu2["ManaF"].Cast<Slider>().CurrentValue)
             {
-                if (ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Q.IsReady())
+                if (ModesMenu2["LastQ"].Cast<CheckBox>().CurrentValue && Q.IsReady())
                 {
                     Q.Cast(source);
                 }

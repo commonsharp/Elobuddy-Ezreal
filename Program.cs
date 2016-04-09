@@ -21,28 +21,30 @@ namespace GuTenTak.Ezreal
         public static Item Botrk = new Item(ItemId.Blade_of_the_Ruined_King);
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
         public static Item Tear = new Item(ItemId.Tear_of_the_Goddess);
+        public static Item Manamune = new Item(ItemId.Manamune);
         public static Item Qss = new Item(ItemId.Quicksilver_Sash);
         public static Item Simitar = new Item(ItemId.Mercurial_Scimitar);
         public static Item hextech = new Item(ItemId.Hextech_Gunblade, 700);
 
-        public static AIHeroClient PlayerInstance
+        /*public static AIHeroClient PlayerInstance
         {
             get { return Player.Instance; }
-        }
+        }*/
         private static float HealthPercent()
         {
-            return (PlayerInstance.Health / PlayerInstance.MaxHealth) * 100;
+            return (Player.Instance.Health / Player.Instance.MaxHealth) * 100;
         }
 
         public static AIHeroClient _Player
         {
-            get { return ObjectManager.Player; }
+            get { return Player.Instance; }
         }
 
         public static bool AutoQ { get; protected set; }
         public static float Manaah { get; protected set; }
         public static object GameEvent { get; private set; }
-
+        public static int LastTick = 0;
+        public static IOrderedEnumerable<Obj_AI_Turret> enemyTurret;
         public static Spell.Skillshot Q;
         public static Spell.Skillshot W;
         public static Spell.Skillshot E;
@@ -56,7 +58,7 @@ namespace GuTenTak.Ezreal
 
         static void Game_OnStart(EventArgs args)
         {
-            if (ChampionName != PlayerInstance.BaseSkinName)
+            if (ChampionName != Player.Instance.BaseSkinName)
             {
                 return;
             }
@@ -240,7 +242,7 @@ namespace GuTenTak.Ezreal
                 Common.Skinhack();
 
 
-                if (AutoHarass && ManaAuto <= _Player.ManaPercent)
+                if (AutoHarass && ManaAuto <= Player.Instance.ManaPercent)
                 {
                     Common.AutoQ();
                 }
@@ -296,6 +298,12 @@ namespace GuTenTak.Ezreal
             }
             Common.KillSteal();
             Common.StackTear();
+            if (Environment.TickCount - LastTick > 1500)
+            {
+                enemyTurret = ObjectManager.Get<Obj_AI_Turret>().Where(tur => tur.IsEnemy && tur.Health > 0)
+                .OrderBy(tur => tur.Distance(Player.Instance.ServerPosition));
+                LastTick = Environment.TickCount;
+            }
         }
     }
 }

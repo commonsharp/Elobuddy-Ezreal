@@ -44,7 +44,7 @@ namespace GuTenTak.Ezreal
         public static float Manaah { get; protected set; }
         public static object GameEvent { get; private set; }
         public static int LastTick = 0;
-        public static IOrderedEnumerable<Obj_AI_Turret> enemyTurret;
+        public static IOrderedEnumerable<Obj_AI_Turret> enemyTurret=null;
         public static Spell.Skillshot Q;
         public static Spell.Skillshot W;
         public static Spell.Skillshot E;
@@ -137,8 +137,9 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.AddLabel("Flee Configs");
                 ModesMenu3.Add("FleeQ", new CheckBox("Use Q on Flee", true));
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
+                //ModesMenu3.Add("BlockE", new CheckBox("Block EnemyUnderTurret (AutoBuddy only)", false));
                 ModesMenu3.Add("ManaFlQ", new Slider("Q Mana %", 35));
-                
+
                 ModesMenu3.AddLabel("Item Usage on Combo");
                 ModesMenu3.Add("useYoumuu", new CheckBox("Use Youmuu", true));
                 ModesMenu3.Add("usehextech", new CheckBox("Use Hextech", true));
@@ -298,12 +299,12 @@ namespace GuTenTak.Ezreal
             }
             Common.KillSteal();
             Common.StackTear();
-            if (Environment.TickCount - LastTick > 1500)
+            /*if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && Environment.TickCount - LastTick > 1500)
             {
                 enemyTurret = ObjectManager.Get<Obj_AI_Turret>().Where(tur => tur.IsEnemy && tur.Health > 0)
-                .OrderBy(tur => tur.Distance(Player.Instance.ServerPosition));
+                .OrderBy(tur => tur.Distance(Player.Instance.Position));
                 LastTick = Environment.TickCount;
-            }
+            }*/
         }
     }
 }

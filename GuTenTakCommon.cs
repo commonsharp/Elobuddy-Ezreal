@@ -373,7 +373,7 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
         {
             if (ModesMenu3["FleeQ"].Cast<CheckBox>().CurrentValue && Program._Player.ManaPercent <= Program.ModesMenu3["ManaFlQ"].Cast<Slider>().CurrentValue)
             {
-                if ( Player.Instance.CountEnemiesInRange(400) == 0 || E.IsReady(1500) && !E.IsReady() )
+                if ( Player.Instance.CountEnemiesInRange(400) == 0 /*|| E.IsReady(1500) && !E.IsReady()*/ )
                 {
                     var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
                     if (Target != null && Target.IsValid)
@@ -387,14 +387,15 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
             if (ModesMenu3["FleeE"].Cast<CheckBox>().CurrentValue)
             {
                 var tempPos = Game.CursorPos;
-                if ( !enemyTurret.FirstOrDefault(tur => tur.Distance(tempPos) < 850).IsValid && tempPos.IsInRange(Player.Instance.Position, E.Range))
+                if ( tempPos.IsInRange(Player.Instance.Position, E.Range))
                 {
+                    //if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && !enemyTurret.FirstOrDefault(tur => tur.Distance(tempPos) < 850).IsValid) return;
                     E.Cast(tempPos);
                 }
                 else
                 {
                     tempPos = Player.Instance.Position.Extend(tempPos, 450).To3DWorld();
-                    if (enemyTurret.FirstOrDefault(tur => tur.Distance(tempPos) < 850).IsValid) return;
+                    //if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && enemyTurret.FirstOrDefault(tur => tur.Distance(tempPos) < 850).IsValid) return;
                     E.Cast(tempPos);
                     //Drawing.OnDraw+=(args)=>Drawing.DrawCircle(Player.Instance.Position.Extend(tempPos, 450).To3DWorld(),30, System.Drawing.Color.Red);
                 }
@@ -477,8 +478,9 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
                 if (sender.IsEnemy && sender.GetAutoAttackRange() >= ObjectManager.Player.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
                 {
                     var diffGapCloser = gapcloser.End - gapcloser.Start + Player.Instance.ServerPosition;
-                    if (!enemyTurret.FirstOrDefault(tur => tur.Distance(diffGapCloser) < 850).IsValid)
-                        E.Cast(diffGapCloser);
+                    //if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && !enemyTurret.FirstOrDefault(tur => tur.Distance(diffGapCloser) < 850).IsValid)
+                    //    return;
+                    E.Cast(diffGapCloser);
                 }
             }
         }

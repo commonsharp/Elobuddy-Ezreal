@@ -16,20 +16,24 @@ namespace GuTenTak.Ezreal
     {
         public const string ChampionName = "Ezreal";
         public static Menu Menu, ModesMenu1, ModesMenu2, ModesMenu3, DrawMenu;
-        public static int SkinBase;
+        //public static int SkinBase;
         public static Item Youmuu = new Item(ItemId.Youmuus_Ghostblade);
         public static Item Botrk = new Item(ItemId.Blade_of_the_Ruined_King);
         public static Item Cutlass = new Item(ItemId.Bilgewater_Cutlass);
         public static Item Tear = new Item(ItemId.Tear_of_the_Goddess);
         public static Item Manamune = new Item(ItemId.Manamune);
+        public static Item Archangel = new Item(ItemId.Archangels_Staff);
         public static Item Qss = new Item(ItemId.Quicksilver_Sash);
         public static Item Simitar = new Item(ItemId.Mercurial_Scimitar);
         public static Item hextech = new Item(ItemId.Hextech_Gunblade, 700);
-
+        public static string[] herogapcloser =
+        {
+            "Braum", "Ekko", "Elise", "Fiora", "Kindred", "Lucian", "Yi", "Nidalee", "Quinn", "Riven", "Shaco", "Sion", "Vayne", "Yasuo", "Graves", "Azir", "Gnar", "Irelia", "Kalista"
+        };
         /*public static AIHeroClient PlayerInstance
         {
             get { return Player.Instance; }
-        }*/
+        }
         private static float HealthPercent()
         {
             return (Player.Instance.Health / Player.Instance.MaxHealth) * 100;
@@ -44,7 +48,7 @@ namespace GuTenTak.Ezreal
         public static float Manaah { get; protected set; }
         public static object GameEvent { get; private set; }
         public static int LastTick = 0;
-        public static IOrderedEnumerable<Obj_AI_Turret> enemyTurret=null;
+        public static IOrderedEnumerable<Obj_AI_Turret> enemyTurret=null;*/
         public static Spell.Skillshot Q;
         public static Spell.Skillshot W;
         public static Spell.Skillshot E;
@@ -67,9 +71,8 @@ namespace GuTenTak.Ezreal
             Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
             Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
-            Game.OnTick += OnTick;
-            // Item
-            SkinBase = Player.Instance.SkinId;
+            //Game.OnTick += OnTick;
+            //SkinBase = Player.Instance.SkinId;
             try
             {
                 Q = new Spell.Skillshot(SpellSlot.Q, 1150, SkillShotType.Linear, 250, 2000, 60);
@@ -80,18 +83,15 @@ namespace GuTenTak.Ezreal
                 E.AllowedCollisionCount = int.MaxValue;
                 R = new Spell.Skillshot(SpellSlot.R, 3000, SkillShotType.Linear, 1000, 2000, 160);
                 R.AllowedCollisionCount = int.MaxValue;
-
-
-
+                
                 Bootstrap.Init(null);
                 Chat.Print("GuTenTak Addon Loading Success", Color.Green);
-
-
+                
                 Menu = MainMenu.AddMenu("GuTenTak Ezreal", "Ezreal");
                 Menu.AddSeparator();
                 Menu.AddLabel("GuTenTak Ezreal Addon");
 
-                var Enemies = EntityManager.Heroes.Enemies.Where(a => !a.IsMe).OrderBy(a => a.BaseSkinName);
+                //var Enemies = EntityManager.Heroes.Enemies.Where(a => !a.IsMe).OrderBy(a => a.BaseSkinName);
                 ModesMenu1 = Menu.AddSubMenu("Menu", "Modes1Ezreal");
                 ModesMenu1.AddSeparator();
                 ModesMenu1.AddLabel("Combo Configs");
@@ -136,6 +136,7 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("StackTear", new CheckBox("Auto stack tear in fountain", true));
                 ModesMenu3.AddLabel("Flee Configs");
                 ModesMenu3.Add("FleeQ", new CheckBox("Use Q on Flee", true));
+                ModesMenu3.Add("FleeOQ", new CheckBox("Use Q only hero", true));
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
                 //ModesMenu3.Add("BlockE", new CheckBox("Block EnemyUnderTurret (AutoBuddy only)", false));
                 ModesMenu3.Add("ManaFlQ", new Slider("Q Mana %", 35));
@@ -179,11 +180,68 @@ namespace GuTenTak.Ezreal
                 DrawMenu.Add("drawXR", new CheckBox(" Draw Don't Use R", true));
                 DrawMenu.Add("drawXFleeQ", new CheckBox(" Draw Don't Use Flee Q", false));
 
+                if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
+                    Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
+                ModesMenu3["AntiGap"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
+                    else
+                        Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
+                };
+                if (ModesMenu1["KS"].Cast<CheckBox>().CurrentValue)
+                    Game.OnTick += Common.KillSteal;
+                ModesMenu1["KS"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Game.OnTick += Common.KillSteal;
+                    else
+                        Game.OnTick -= Common.KillSteal;
+                };
+                if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
+                    Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+                ModesMenu1["ComboA"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
+                    else
+                        Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
+                };
+                if (ModesMenu3["StackTear"].Cast<CheckBox>().CurrentValue)
+                    Game.OnTick += Common.StackTear;
+                ModesMenu3["StackTear"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Game.OnTick += Common.StackTear;
+                    else
+                        Game.OnTick -= Common.StackTear;
+                };
+                if (ModesMenu3["skinhack"].Cast<CheckBox>().CurrentValue)
+                    Game.OnTick += Common.Skinhack;
+                ModesMenu3["skinhack"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Game.OnTick += Common.Skinhack;
+                    else
+                    {
+                        Player.SetSkinId(0);
+                        Game.OnTick -= Common.Skinhack;
+                    }
+                };
+                if (ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue)
+                    Game.OnTick += Common.AutoQ;
+                ModesMenu1["AutoHarass"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Game.OnTick += Common.AutoQ;
+                    else
+                        Game.OnTick -= Common.AutoQ;
+                };
             }
 
             catch (Exception e)
             {
-
+                Console.WriteLine(e.StackTrace);
             }
 
         }
@@ -194,35 +252,35 @@ namespace GuTenTak.Ezreal
             {
                 if (DrawMenu["drawQ"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Q.IsReady() && Q.IsLearned)
+                    if (Q.IsReady())
                     {
                         Circle.Draw(Color.White, Q.Range, Player.Instance.Position);
                     }
                 }
                 if (DrawMenu["drawW"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (W.IsReady() && W.IsLearned)
+                    if (W.IsReady())
                     {
                         Circle.Draw(Color.White, W.Range, Player.Instance.Position);
                     }
                 }
                 if (DrawMenu["drawR"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (R.IsReady() && R.IsLearned)
+                    if (R.IsReady())
                     {
                         Circle.Draw(Color.White, R.Range, Player.Instance.Position);
                     }
                 }
                 if (DrawMenu["drawXR"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (R.IsReady() && R.IsLearned)
+                    if (R.IsReady())
                     {
                         Circle.Draw(Color.Red, 700, Player.Instance.Position);
                     }
                 }
                 if (DrawMenu["drawXFleeQ"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Q.IsReady() && Q.IsLearned)
+                    if (Q.IsReady())
                     {
                         Circle.Draw(Color.Red, 400, Player.Instance.Position);
                     }
@@ -237,17 +295,6 @@ namespace GuTenTak.Ezreal
         {
             try
             {
-                var AutoHarass = ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue;
-                var ManaAuto = ModesMenu1["ManaAuto"].Cast<Slider>().CurrentValue;
-
-                Common.Skinhack();
-
-
-                if (AutoHarass && ManaAuto <= Player.Instance.ManaPercent)
-                {
-                    Common.AutoQ();
-                }
-
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                 {
                     Common.Combo();
@@ -260,26 +307,21 @@ namespace GuTenTak.Ezreal
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
                 {
-
                     Common.LaneClear();
-
                 }
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
                 {
-
                     Common.JungleClear();
                 }
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
                 {
                     Common.LastHit();
-
                 }
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
                 {
                     Common.Flee();
-
                 }
             }
             catch (Exception e)
@@ -287,9 +329,13 @@ namespace GuTenTak.Ezreal
 
             }
         }
-        public static void OnTick(EventArgs args)
+        /*public static void OnTick(EventArgs args)
         {
-            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            if (ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue)
+            {
+                Common.AutoQ();
+            }
+            if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
             {
                 Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
             }
@@ -299,12 +345,13 @@ namespace GuTenTak.Ezreal
             }
             Common.KillSteal();
             Common.StackTear();
-            /*if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && Environment.TickCount - LastTick > 1500)
+            Common.Skinhack();
+            if (ModesMenu3["BlockE"].Cast<CheckBox>().CurrentValue && Environment.TickCount - LastTick > 1500)
             {
                 enemyTurret = ObjectManager.Get<Obj_AI_Turret>().Where(tur => tur.IsEnemy && tur.Health > 0)
                 .OrderBy(tur => tur.Distance(Player.Instance.Position));
                 LastTick = Environment.TickCount;
-            }*/
-        }
+            }
+        }*/
     }
 }

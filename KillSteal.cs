@@ -6,10 +6,10 @@ namespace GuTenTak_Ezreal
 {
     public static class KillSteal
     {
-        private static AIHeroClient MyHero
+        /*private static AIHeroClient MyHero
         {
-            get { return ObjectManager.Player; }
-        }
+            get { return Player.Instance; }
+        }*/
 
         public static bool IsKillable(this AIHeroClient target, SpellSlot spell)
         {
@@ -18,7 +18,7 @@ namespace GuTenTak_Ezreal
                 return false;
             if (target.ChampionName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD") && !target.HasBuff("ManaBarrier"))
                 totalHealth += target.Mana / 2;
-            return (MyHero.GetSpellDamage(target, spell) >= totalHealth);
+            return (Player.Instance.GetSpellDamage(target, spell) >= totalHealth);
         }
 
         public static float TotalShieldHealth(this Obj_AI_Base target)

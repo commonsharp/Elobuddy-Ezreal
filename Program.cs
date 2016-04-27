@@ -68,11 +68,11 @@ namespace GuTenTak.Ezreal
             }
                 
             Game.OnUpdate += Game_OnUpdate;
-            Drawing.OnDraw += Game_OnDraw;
+            /*Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
             Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
-            //Game.OnTick += OnTick;
-            //SkinBase = Player.Instance.SkinId;
+            Game.OnTick += Common.ItemUsage;
+            SkinBase = Player.Instance.SkinId;*/
             try
             {
                 Q = new Spell.Skillshot(SpellSlot.Q, 1150, SkillShotType.Linear, 250, 2000, 60);
@@ -138,18 +138,21 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("FleeQ", new CheckBox("Use Q on Flee", true));
                 ModesMenu3.Add("FleeOQ", new CheckBox("Use Q only hero", true));
                 ModesMenu3.Add("FleeE", new CheckBox("Use E on Flee", true));
-                //ModesMenu3.Add("BlockE", new CheckBox("Block EnemyUnderTurret (AutoBuddy only)", false));
+                //ModesMenu3.Add("BlockE", new CheckBox("Block EnemyUnderTurret", false));
                 ModesMenu3.Add("ManaFlQ", new Slider("Q Mana %", 35));
 
                 ModesMenu3.AddLabel("Item Usage on Combo");
+                ModesMenu3.Add("useItems", new CheckBox("Use Items", true));
+                ModesMenu3.AddSeparator(1);
                 ModesMenu3.Add("useYoumuu", new CheckBox("Use Youmuu", true));
                 ModesMenu3.Add("usehextech", new CheckBox("Use Hextech", true));
                 ModesMenu3.Add("useBotrk", new CheckBox("Use Botrk & Cutlass", true));
-                ModesMenu3.Add("useQss", new CheckBox("Use QuickSilver", true));
                 ModesMenu3.Add("minHPBotrk", new Slider("Min health to use Botrk %", 80));
                 ModesMenu3.Add("enemyMinHPBotrk", new Slider("Min enemy health to use Botrk %", 80));
 
                 ModesMenu3.AddLabel("QSS Configs");
+                ModesMenu3.Add("useQss", new CheckBox("Use QuickSilver", true));
+                ModesMenu3.AddSeparator(1);
                 ModesMenu3.Add("Qssmode", new ComboBox(" ", 0, "Auto", "Combo"));
                 ModesMenu3.Add("Stun", new CheckBox("Stun", true));
                 ModesMenu3.Add("Blind", new CheckBox("Blind", true));
@@ -174,11 +177,43 @@ namespace GuTenTak.Ezreal
                 ModesMenu3.Add("skinId", new ComboBox("Skin Mode", 0, "Default", "1", "2", "3", "4", "5", "6", "7", "8"));
 
                 DrawMenu = Menu.AddSubMenu("Draws", "DrawEzreal");
+                DrawMenu.Add("usedraw", new CheckBox("Enable Drawings", true));
+                DrawMenu.AddSeparator(1);
                 DrawMenu.Add("drawQ", new CheckBox(" Draw Q", true));
                 DrawMenu.Add("drawW", new CheckBox(" Draw W", true));
                 DrawMenu.Add("drawR", new CheckBox(" Draw R", false));
                 DrawMenu.Add("drawXR", new CheckBox(" Draw Don't Use R", true));
                 DrawMenu.Add("drawXFleeQ", new CheckBox(" Draw Don't Use Flee Q", false));
+
+                if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue)
+                    Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
+                ModesMenu3["useQss"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Obj_AI_Base.OnBuffGain += Common.OnBuffGain;
+                    else
+                        Obj_AI_Base.OnBuffGain -= Common.OnBuffGain;
+                };
+
+                if (ModesMenu3["useItems"].Cast<CheckBox>().CurrentValue)
+                    Game.OnTick += Common.ItemUsage;
+                ModesMenu3["useItems"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Game.OnTick += Common.ItemUsage;
+                    else
+                        Game.OnTick -= Common.ItemUsage;
+                };
+
+                if (DrawMenu["usedraw"].Cast<CheckBox>().CurrentValue)
+                    Drawing.OnDraw += Game_OnDraw;
+                DrawMenu["usedraw"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (vargs.NewValue)
+                        Drawing.OnDraw += Game_OnDraw;
+                    else
+                        Drawing.OnDraw -= Game_OnDraw;
+                };
 
                 if (ModesMenu3["AntiGap"].Cast<CheckBox>().CurrentValue)
                     Gapcloser.OnGapcloser += Common.Gapcloser_OnGapCloser;
@@ -189,6 +224,7 @@ namespace GuTenTak.Ezreal
                     else
                         Gapcloser.OnGapcloser -= Common.Gapcloser_OnGapCloser;
                 };
+
                 if (ModesMenu1["KS"].Cast<CheckBox>().CurrentValue)
                     Game.OnTick += Common.KillSteal;
                 ModesMenu1["KS"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
@@ -198,6 +234,7 @@ namespace GuTenTak.Ezreal
                     else
                         Game.OnTick -= Common.KillSteal;
                 };
+
                 if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
                     Orbwalker.OnPostAttack += Common.Orbwalker_OnPostAttack;
                 ModesMenu1["ComboA"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
@@ -207,6 +244,7 @@ namespace GuTenTak.Ezreal
                     else
                         Orbwalker.OnPostAttack -= Common.Orbwalker_OnPostAttack;
                 };
+
                 if (ModesMenu3["StackTear"].Cast<CheckBox>().CurrentValue)
                     Game.OnTick += Common.StackTear;
                 ModesMenu3["StackTear"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
@@ -216,18 +254,22 @@ namespace GuTenTak.Ezreal
                     else
                         Game.OnTick -= Common.StackTear;
                 };
+
                 if (ModesMenu3["skinhack"].Cast<CheckBox>().CurrentValue)
-                    Game.OnTick += Common.Skinhack;
+                    Player.SetSkinId(ModesMenu3["skinId"].Cast<ComboBox>().CurrentValue);
+                ModesMenu3["skinId"].Cast<ComboBox>().OnValueChange += (sender, vargs) =>
+                {
+                    if (ModesMenu3["skinhack"].Cast<CheckBox>().CurrentValue)
+                        Player.SetSkinId(vargs.NewValue);
+                };
                 ModesMenu3["skinhack"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
                 {
                     if (vargs.NewValue)
-                        Game.OnTick += Common.Skinhack;
+                        Player.SetSkinId(ModesMenu3["skinId"].Cast<ComboBox>().CurrentValue);
                     else
-                    {
                         Player.SetSkinId(0);
-                        Game.OnTick -= Common.Skinhack;
-                    }
                 };
+
                 if (ModesMenu1["AutoHarass"].Cast<CheckBox>().CurrentValue)
                     Game.OnTick += Common.AutoQ;
                 ModesMenu1["AutoHarass"].Cast<CheckBox>().OnValueChange += (sender, vargs) =>
@@ -247,7 +289,6 @@ namespace GuTenTak.Ezreal
         }
         private static void Game_OnDraw(EventArgs args)
         {
-
             try
             {
                 if (DrawMenu["drawQ"].Cast<CheckBox>().CurrentValue)
@@ -286,7 +327,7 @@ namespace GuTenTak.Ezreal
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
@@ -298,7 +339,7 @@ namespace GuTenTak.Ezreal
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                 {
                     Common.Combo();
-                    Common.ItemUsage();
+                    //Common.ItemUsage();
                 }
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
                 {
@@ -324,9 +365,9 @@ namespace GuTenTak.Ezreal
                     Common.Flee();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
+                Game.LuaDoString("");
             }
         }
         /*public static void OnTick(EventArgs args)

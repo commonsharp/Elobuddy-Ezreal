@@ -77,12 +77,12 @@ namespace GuTenTak.Ezreal
                 var Qp = Q.GetPrediction(Target);
                 if (ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue && !Player.Instance.IsInAutoAttackRange(Target) && !Target.IsInvulnerable)
                 {
-                    if (Qp.HitChance >= HitChance.High)
+                    if (Qp.HitChancePercent >= 77)
                         Q.Cast(Qp.CastPosition);
                 }
                 else if(!ModesMenu1["ComboA"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Qp.HitChance >= HitChance.High)
+                    if (Qp.HitChancePercent >= 77)
                         Q.Cast(Qp.CastPosition);
                 }
             }
@@ -401,7 +401,7 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
             }
         }
 
-        internal static void ItemUsage()
+        internal static void ItemUsage(EventArgs args)
         {
             if (ModesMenu3["useYoumuu"].Cast<CheckBox>().CurrentValue && Youmuu.IsReady())
             {
@@ -436,11 +436,11 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
 
         internal static void DoQSS()
         {
-            if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue && Qss.IsOwned() && Qss.IsReady() && Player.Instance.CountEnemiesInRange(1800) > 0)
+            if (Qss.IsReady() && Player.Instance.CountEnemiesInRange(1800) > 0)
             {
                 Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssDelay"].Cast<Slider>().CurrentValue);
             }
-            if (Simitar.IsOwned() && Simitar.IsReady() && Player.Instance.CountEnemiesInRange(1800) > 0)
+            if (Simitar.IsReady() && Player.Instance.CountEnemiesInRange(1800) > 0)
             {
                 Core.DelayAction(() => Simitar.Cast(), ModesMenu3["QssDelay"].Cast<Slider>().CurrentValue);
             }
@@ -448,21 +448,21 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
 
         private static void UltQSS()
         {
-            if (ModesMenu3["useQss"].Cast<CheckBox>().CurrentValue && Qss.IsOwned() && Qss.IsReady())
+            if (Qss.IsReady())
             {
                 Core.DelayAction(() => Qss.Cast(), ModesMenu3["QssUltDelay"].Cast<Slider>().CurrentValue);
             }
-            if (Simitar.IsOwned() && Simitar.IsReady())
+            if (Simitar.IsReady())
             {
                 Core.DelayAction(() => Simitar.Cast(), ModesMenu3["QssUltDelay"].Cast<Slider>().CurrentValue);
             }
         }
 
-        public static void Skinhack(EventArgs args)
+        /*public static void Skinhack(EventArgs args)
         {
-            Player.SetSkinId((int)ModesMenu3["skinId"].Cast<ComboBox>().CurrentValue);
+            Player.SetSkinId(ModesMenu3["skinId"].Cast<ComboBox>().CurrentValue);
         }
-
+        */
         internal static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs gapcloser)
         {
             if (sender.IsEnemy && sender.GetAutoAttackRange() >= Player.Instance.Distance(gapcloser.End) && !herogapcloser.Any(sender.ChampionName.Contains))
@@ -481,19 +481,19 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
                 if (enemy == null) return;
                 if (enemy.HealthPercent <= 40 && enemy.IsValidTarget(R.Range))
                 {
-                    if (ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Q.IsReady() && Q.IsInRange(enemy) && !enemy.IsInvulnerable && DamageLib.QCalc(enemy) >= enemy.Health)
+                    if (ModesMenu1["KQ"].Cast<CheckBox>().CurrentValue && Q.IsReady() && Q.IsInRange(enemy) && GuTenTak_Ezreal.KillSteal.IsKillable(enemy, Q.Slot))//!enemy.IsInvulnerable && DamageLib.QCalc(enemy) >= enemy.Health)
                     {
                         var Qp = Q.GetPrediction(enemy);
                         if (Qp.HitChance >= HitChance.High)
                             Q.Cast(Qp.CastPosition);
                     }
-                    if (ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && W.IsReady() && W.IsInRange(enemy) && !enemy.IsInvulnerable && DamageLib.WCalc(enemy) >= enemy.Health)
+                    if (ModesMenu1["KW"].Cast<CheckBox>().CurrentValue && W.IsReady() && W.IsInRange(enemy) && GuTenTak_Ezreal.KillSteal.IsKillable(enemy, W.Slot))//!enemy.IsInvulnerable && DamageLib.WCalc(enemy) >= enemy.Health)
                     {
                         var Wp = W.GetPrediction(enemy);
                         if (Wp.HitChance >= HitChance.High)
                             W.Cast(Wp.CastPosition);
                     }
-                    if (ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && R.IsReady() && R.IsInRange(enemy) && Player.Instance.CountEnemiesInRange(700) == 0 && !enemy.IsInvulnerable && DamageLib.RCalc(enemy) * 0.7f >= enemy.Health)
+                    if (ModesMenu1["KR"].Cast<CheckBox>().CurrentValue && R.IsReady() && R.IsInRange(enemy) && Player.Instance.CountEnemiesInRange(700) == 0 && GuTenTak_Ezreal.KillSteal.IsKillable(enemy, R.Slot))//!enemy.IsInvulnerable && DamageLib.RCalc(enemy) * 0.7f >= enemy.Health)
                     {
                         var Rp = R.GetPrediction(enemy);
                         if (Rp.HitChance >= HitChance.High)

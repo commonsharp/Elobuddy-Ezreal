@@ -12,18 +12,14 @@ namespace GuTenTak.Ezreal
 {
     internal class Common : Program
     {
-        /*public static object HeroManager { get; private set; }
-        public static Geometry.Polygon.Circle DashCircle { get; private set; }
-
-        public static Obj_AI_Base GetFindObj(Vector3 Pos, string name, float range)
+        public static Obj_AI_Base GetFindObj(string name, float range, Vector3 Pos)
         {
             var CusPos = Pos;
-            {
-                var GetObj = ObjectManager.Get<Obj_AI_Base>().FirstOrDefault(f => f.IsAlly && !f.IsMe && f.Position.Distance(Player.Instance.Position) < range && f.Distance(CusPos) < 150);
-                if (GetObj != null)
-                    return GetObj;
-                return null;
-            }
+            if (ObjectManager.Player.Distance(CusPos) > range) CusPos = (Vector3)Player.Instance.Position.Extend(Game.CursorPos, range);
+            var GetObj = ObjectManager.Get<Obj_AI_Base>().FirstOrDefault(f => f.IsAlly && !f.IsMe && f.Position.Distance(ObjectManager.Player.Position) < range && f.Distance(CusPos) < 150);
+            if (GetObj != null)
+                return GetObj;
+            return null;
         }
 
         public static void MovingPlayer(Vector3 Pos)
@@ -34,7 +30,7 @@ namespace GuTenTak.Ezreal
         {
             var target = Drawing.WorldToScreen(Target);
             return target;
-        }*/
+        }
 
         internal static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {

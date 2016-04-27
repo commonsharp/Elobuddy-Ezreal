@@ -367,7 +367,7 @@ namespace GuTenTak.Ezreal
             }
             catch (Exception)
             {
-                Game.LuaDoString("");
+                //Game.LuaDoString("");
             }
         }
         /*public static void OnTick(EventArgs args)

@@ -411,21 +411,20 @@ if (Q.IsReady() && ModesMenu2["FarmQ"].Cast<CheckBox>().CurrentValue && Program.
                     Item.UseItem(hextech.Id, htarget);
                 }
             }
-            if (ModesMenu3["useBotrk"].Cast<CheckBox>().CurrentValue && Item.CanUseItem(Cutlass.Id) ||
-                ModesMenu3["useBotrk"].Cast<CheckBox>().CurrentValue && Item.CanUseItem(Botrk.Id))
+            if (ModesMenu3["useBotrk"].Cast<CheckBox>().CurrentValue)
             {
-                if (!(Player.Instance.HealthPercent < ModesMenu3["minHPBotrk"].Cast<Slider>().CurrentValue))
+                var ReadyCutlass = Item.CanUseItem(Cutlass.Id);
+                var ReadyBotrk = Item.CanUseItem(Botrk.Id);
+                if (!ReadyBotrk && !ReadyCutlass || Player.Instance.HealthPercent > ModesMenu3["minHPBotrk"].Cast<Slider>().CurrentValue)
                     return;
                 var btarget = TargetSelector.GetTarget(550, DamageType.Physical); // 550 = Botrk.Range
                 if (btarget != null && btarget.IsValid &&
                     btarget.HealthPercent < ModesMenu3["enemyMinHPBotrk"].Cast<Slider>().CurrentValue)
                 {
-                    Item.UseItem(Cutlass.Id, btarget);
-                }
-                if (btarget != null && btarget.IsValid &&
-                    btarget.HealthPercent < ModesMenu3["enemyMinHPBotrk"].Cast<Slider>().CurrentValue)
-                {
-                    Botrk.Cast(btarget);
+                    if (ReadyCutlass)
+                        Item.UseItem(Cutlass.Id, btarget);
+                    if (ReadyBotrk)
+                        Botrk.Cast(btarget);
                 }
             }
         }
